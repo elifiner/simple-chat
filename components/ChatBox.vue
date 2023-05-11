@@ -1,6 +1,6 @@
 <template>
 <div class="flex flex-col h-screen mx-auto px-2 sm:px-0 sm:py-5 max-w-2xl">
-  <div class="flex-grow overflow-y-auto flex flex-col-reverse">
+  <div class="flex-grow overflow-y-auto flex flex-col-reverse mb-2">
     <div v-for="(message, index) in messages.slice().reverse()" :key="index" 
          class="mb-2 p-4 rounded-lg" 
          :class="{'bg-blue-200': message.sender === 'user', 'bg-red-200': message.sender === 'bot'}">
