@@ -1,19 +1,33 @@
 <template>
-<div class="flex flex-col h-screen mx-auto px-2 sm:px-0 sm:py-5 max-w-2xl">
-  <div class="flex-grow overflow-y-auto flex flex-col-reverse mb-2">
+<div class="text-white bg-gray-500 flex flex-col h-screen mx-auto sm:py-5">
+  <div class="mb-6 flex-grow overflow-y-auto flex flex-col-reverse mb-2 px-2 sm:px-0">
     <div v-for="(message, index) in messages.slice().reverse()" :key="index" 
-         class="mb-2 p-4 rounded-lg" 
-         :class="{'bg-blue-200': message.sender === 'user', 'bg-red-200': message.sender === 'bot'}">
-      {{ message.text }}
+         class="p-4 rounded-none w-full"
+         :class="{'bg-gray-600': message.sender === 'user', 'bg-gray-500': message.sender === 'bot'}">
+      <div class="max-w-2xl mx-auto">
+        <div class="flex">
+          <div class="w-8">
+            <div v-if="message.sender === 'user'" class="mr-2"><UserIcon class="h-6 w-6 text-blue-200" /></div>
+            <div v-else class="mr-2"><PrinterIcon class="h-6 w-6 text-blue-200" /></div>
+          </div>
+          <div class="flex-grow">
+            {{ message.text }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="w-full">
-    <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type a message..." class="w-full p-2 border-t-2 border-red-200 focus:outline-none" />
+  <div class="w-full px-2 sm:px-0">
+    <div class="max-w-2xl mx-auto">
+      <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Type a message..." class="w-full p-3 focus:outline-none rounded-lg bg-gray-600 shadow-xl" />
+    </div>
   </div>
 </div>
 </template>
 
 <script>
+import { UserIcon } from '@heroicons/vue/24/solid'
+import { PrinterIcon } from '@heroicons/vue/24/solid'
 export default {
   data() {
     return {
@@ -23,7 +37,6 @@ export default {
   },
   methods: {
     async sendMessage() {
-      console.log('send message');
       const message = {
         text: this.newMessage,
         sender: 'user',
@@ -31,13 +44,17 @@ export default {
       this.messages.push(message)
       this.newMessage = ''
 
-      const response = await $fetch('/api/chat', { method: 'post', body: { message: message.text } })
+      const response = await $fetch('/api/chat', { method: 'post', body: { messages: this.messages } })
 
       this.messages.push({
         text: response.message,
         sender: 'bot',
       })
     },
+  },
+  components: {
+    PrinterIcon,
+    UserIcon,
   },
 }
 </script>
